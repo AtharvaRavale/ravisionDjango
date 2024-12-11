@@ -12,7 +12,8 @@ class Register(View):
     def post(self,request):
         form=RegisterForm(request.POST)
         if form.is_valid():
-            form.save()
+            user=form.save(commit=False)
+            user.save()
             return redirect('login')
         else:
             return render(request,"accounts/register.html",{'form':form})
@@ -29,10 +30,11 @@ class Login(View):
     def post(self,request):
         form=LoginForm(request.POST)
         if form.is_valid():
-            user=authenticate(form.cleaned_data['username'],form.cleaned_data['password'])
+            user=authenticate(request=request,username=form.cleaned_data['username']
+                          ,password=form.cleaned_data['password'])
             if user:
-                login(request,user)
-                return redirect('register')
+             login(request,user)
+             return redirect('register')
         return render(request,"accounts/login.html",{'form':form})
 
 
